@@ -42,6 +42,17 @@
     mode: 0755
   when: kubernetes_node_type == 'worker'
 
+- name: Restart kubeproxy at reboot
+  copy:
+    content: |
+             #!/bin/bash
+             sudo -i -u nd nohup kubectl proxy --address={{ master_ip }} --accept-hosts='^.*$' &
+             exit
+    dest: /etc/rc.local
+    owner: root
+    mode: 0755
+  when: kubernetes_node_type == 'admin'
+
 - name: swapoff
   shell: swapoff -a
   args:
@@ -148,13 +159,10 @@
     - kubernetes_node_type == 'worker'
     - k8s_token is defined
 
-- name: Forward Rule
-  shell: 'iptables -P FORWARD ACCEPT'
-  args:
-    creates: /home/nd/.k8sinstall
-
 - name: proxy master
   shell: nohup kubectl proxy --address={{ master_ip }} --accept-hosts='^.*$' &
+  args:
+    creates: /home/nd/.k8sinstall
   become_user: nd
   when: kubernetes_node_type == 'admin'
 
