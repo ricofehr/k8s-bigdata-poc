@@ -1,0 +1,40 @@
+---
+
+- name: public-ip
+  ipify_facts:
+- name: Flush iptables tables
+  iptables: flush=yes
+- name: Set established connection IN
+  iptables: chain=INPUT ctstate=ESTABLISHED,RELATED jump=ACCEPT comment='Allow all established connection IN'
+- name: Allow himself IN
+  iptables: chain=INPUT ctstate=NEW source="{{ ipify_public_ip }}" jump=ACCEPT comment='Himself OK'
+- name: Allow localhost IN
+  iptables: chain=INPUT ctstate=NEW source=127.0.0.1 jump=ACCEPT comment='Himself OK'
+- name: Ssh connection IN
+  iptables: chain=INPUT ctstate=NEW destination_port=22 protocol=tcp jump=ACCEPT comment='Port 22 Opened IN'
+- name: Zookeeper connection IN
+  iptables: chain=INPUT ctstate=NEW destination_port=2181 protocol=tcp jump=ACCEPT comment='Port 2181 Opened IN'
+- name: Http connection IN
+  iptables: chain=INPUT ctstate=NEW destination_port=80 protocol=tcp jump=ACCEPT comment='Port 80 Opened IN'
+- name: Https connection IN
+  iptables: chain=INPUT ctstate=NEW destination_port=443 protocol=tcp jump=ACCEPT comment='Port 443 Opened IN'
+- name: Input Drop
+  iptables: chain=INPUT jump=DROP comment='Drop all no allowed Input Traffic'
+- name: Set established connection OUT
+  iptables: chain=OUTPUT ctstate=ESTABLISHED,RELATED jump=ACCEPT comment='Allow all established connection OUT'
+- name: Allow himself OUT
+  iptables: chain=OUTPUT ctstate=NEW destination="{{ ipify_public_ip }}" jump=ACCEPT comment='Himself OK'
+- name: Allow localhost OUT
+  iptables: chain=OUTPUT ctstate=NEW destination=127.0.0.1 jump=ACCEPT comment='Localhost OUT OK'
+- name: Dns connection OUT
+  iptables: chain=OUTPUT ctstate=NEW destination_port=53 protocol=udp jump=ACCEPT comment='Port 53 Opened OUT'
+- name: Ssh connection OUT
+  iptables: chain=OUTPUT ctstate=NEW destination_port=22 protocol=tcp jump=ACCEPT comment='Port 22 Opened OUT'
+- name: Https connection OUT
+  iptables: chain=OUTPUT ctstate=NEW destination_port=443 protocol=tcp jump=ACCEPT comment='Port 443 Opened IN'
+- name: Http connection OUT
+  iptables: chain=OUTPUT ctstate=NEW destination_port=80 protocol=tcp jump=ACCEPT comment='Port 80 Opened OUT'
+- name: Output Drop
+  iptables: chain=OUTPUT jump=DROP comment='Drop all no allowed Output Traffic'
+- name: Forward Drop
+  iptables: chain=FORWARD jump=DROP comment='Drop all no allowed Forward Traffic'

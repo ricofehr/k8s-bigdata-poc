@@ -1,0 +1,11 @@
+# Vagrant folder
+/.vagrant
+
+# tmp folder
+/tmp
+
+# k8s is generated dynamically
+ansible/group_vars/nodes/k8s
+
+# ansible retry file
+ansible/playbook.retry

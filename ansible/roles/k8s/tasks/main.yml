@@ -1,0 +1,170 @@
+---
+
+- name: init master ip
+  set_fact: master_ip="{{ hostvars['master1']['ansible_ssh_host'] }}"
+  when: kubernetes_node_type == 'admin'
+
+- name: debug master ip
+  debug: msg={{ master_ip }}
+  when: kubernetes_node_type == 'admin'
+
+- name: Remove Default Host Entry
+  become: yes
+  lineinfile:
+    dest: /etc/hosts
+    regexp: '^127\.0\.0\.1.*$'
+    state: absent
+
+- name: Ensure Hosts File
+  become: yes
+  lineinfile:
+    dest: /etc/hosts
+    line: "{{ item.ip }} {{ item.name }}"
+  with_items:
+    - { ip: "192.168.77.10", name: "master1" }
+    - { ip: "192.168.77.20", name: "node1" }
+    - { ip: "192.168.77.21", name: "node2" }
+
+- name: K8s ip routed by public master1
+  shell: route add 10.96.0.1 gw {{ k8s_master_ip }}
+  args:
+    creates: /home/nd/.k8sinstall
+  when: kubernetes_node_type == 'worker'
+
+- name: K8s ip route at start
+  copy:
+    content: |
+             #!/bin/bash
+             route add 10.96.0.1 gw {{ k8s_master_ip }}
+             exit 0
+    dest: /etc/rc.local
+    owner: root
+    mode: 0755
+  when: kubernetes_node_type == 'worker'
+
+- name: swapoff
+  shell: swapoff -a
+  args:
+    creates: /home/nd/.k8sinstall
+
+- name: Remove Swap from fstab
+  become: yes
+  lineinfile:
+    dest: /etc/fstab
+    regexp: '^.*swap.*$'
+    state: absent
+
+- name: Ensure kubelet.service
+  service: name=kubelet state=started enabled=yes
+
+- name: init master
+  shell: kubeadm init --apiserver-bind-port 443 --apiserver-advertise-address {{ master_ip }}
+  args:
+    creates: /home/nd/.k8sinstall
+  run_once: true
+  when: kubernetes_node_type == 'admin'
+
+- name: init nd env
+  shell: mkdir -p /home/nd/.kube; sudo cp -i /etc/kubernetes/admin.conf /home/nd/.kube/config;sudo chown nd:nd /home/nd/.kube/config
+  become_user: nd
+  run_once: true
+  when: kubernetes_node_type == 'admin'
+
+- name: get token
+  shell:  kubeadm token list | tail -n 1 | sed "s; .*;;"
+  register: master_token
+  run_once: true
+  when: kubernetes_node_type == 'admin'
+
+- name: token variable for nodes
+  local_action:
+    module: copy
+    content: |
+             k8s_token: {{ hostvars['master1']['master_token']['stdout'] }}
+             k8s_master_ip: {{ master_ip }}
+    dest: group_vars/nodes/k8s
+  when: hostvars['master1']['master_token'] is defined
+
+- name: launch weave
+  shell: kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
+  args:
+    creates: /home/nd/.k8sinstall
+  run_once: true
+  become_user: nd
+  when: kubernetes_node_type == 'admin'
+
+- name: launch dashboard
+  shell: kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/master/src/deploy/recommended/kubernetes-dashboard.yaml
+  args:
+    creates: /home/nd/.k8sinstall
+  run_once: true
+  become_user: nd
+  when: kubernetes_node_type == 'admin'
+
+- name: grant dashboard permissions
+  shell: kubectl create clusterrolebinding add-on-cluster-admin --clusterrole=cluster-admin --serviceaccount=kube-system:kubernetes-dashboard
+  args:
+    creates: /home/nd/.k8sinstall
+  run_once: true
+  become_user: nd
+  when: kubernetes_node_type == 'admin'
+
+- name: clone heapster
+  shell: git clone https://github.com/kubernetes/heapster
+  args:
+    creates: /home/nd/.k8sinstall
+    chdir: /home/nd
+  run_once: true
+  become_user: nd
+  when: kubernetes_node_type == 'admin'
+
+- name: launch influxdb
+  shell: kubectl apply -f heapster/deploy/kube-config/influxdb/
+  args:
+    creates: /home/nd/.k8sinstall
+    chdir: /home/nd
+  run_once: true
+  become_user: nd
+  when: kubernetes_node_type == 'admin'
+
+- name: launch heapster
+  shell: kubectl apply -f heapster/deploy/kube-config/rbac/heapster-rbac.yaml
+  args:
+    creates: /home/nd/.k8sinstall
+    chdir: /home/nd
+  run_once: true
+  become_user: nd
+  when: kubernetes_node_type == 'admin'
+
+- name: Install kubeadm
+  apt: name=kubeadm state=installed update_cache=true force=yes
+  when: kubernetes_node_type == 'worker'
+
+- name: Add k8snode
+  shell: 'kubeadm join --token {{ k8s_token }} --skip-preflight-checks=true {{ k8s_master_ip }}:443'
+  args:
+    creates: /home/nd/.k8sinstall
+  when:
+    - kubernetes_node_type == 'worker'
+    - k8s_token is defined
+
+- name: Forward Rule
+  shell: 'iptables -P FORWARD ACCEPT'
+  args:
+    creates: /home/nd/.k8sinstall
+
+- name: proxy master
+  shell: nohup kubectl proxy --address={{ master_ip }} --accept-hosts='^.*$' &
+  become_user: nd
+  when: kubernetes_node_type == 'admin'
+
+- name: url dashboard
+  debug:
+    msg: "You can reach the dashboard with http://{{ master_ip }}:8001/api/v1/namespaces/kube-system/services/https:kubernetes-dashboard:/proxy/"
+  when: kubernetes_node_type == 'admin'
+
+- name: end install
+  file:
+    dest: /home/nd/.k8sinstall
+    state: touch
+    force: yes

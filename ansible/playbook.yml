@@ -1,0 +1,23 @@
+---
+- hosts: all
+  serial: 1
+  become: true
+  strategy: linear
+  roles:
+    - base
+    - docker
+    - kubernetes
+
+- hosts: master
+  serial: 1
+  become: true
+  strategy: linear
+  roles:
+    - k8s
+
+- hosts: nodes
+  serial: 1
+  become: true
+  strategy: linear
+  roles:
+    - k8s
