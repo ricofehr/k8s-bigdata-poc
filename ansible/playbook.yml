@@ -9,6 +9,9 @@
       become: true
     - role: kubernetes
       become: true
+  pre_tasks:
+    - name: Ensure gitmodules update
+      local_action: command git submodule update --init --recursive
 
 - hosts: master
   serial: 1
