@@ -4,7 +4,8 @@
   become: true
   strategy: linear
   roles:
-    - base
+    - role: base
+      become: false
     - docker
     - kubernetes
 
