@@ -1,13 +1,14 @@
 ---
 - hosts: all
   serial: 1
-  become: true
+  become: false
   strategy: linear
   roles:
     - role: base
-      become: false
-    - docker
-    - kubernetes
+    - role: docker
+      become: true
+    - role: kubernetes
+      become: true
 
 - hosts: master
   serial: 1
