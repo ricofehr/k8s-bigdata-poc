@@ -1,5 +1,13 @@
 ---
 
+- name: Add current user to docker group
+  user:
+    append: yes
+    name: "{{ ansible_user }}"
+    groups:
+      - docker
+  become: yes
+
 - name: init master ip
   set_fact: master_ip="{{ hostvars['master1']['ansible_ssh_host'] }}"
   when: kubernetes_node_type == 'admin'
@@ -15,15 +23,12 @@
     regexp: '^127\.0\.0\.1.*$'
     state: absent
 
-- name: Ensure Hosts File
+- name: Remove Default Host Entry 2
   become: yes
   lineinfile:
     dest: /etc/hosts
-    line: "{{ item.ip }} {{ item.name }}"
-  with_items:
-    - { ip: "192.168.77.10", name: "master1" }
-    - { ip: "192.168.77.20", name: "node1" }
-    - { ip: "192.168.77.21", name: "node2" }
+    regexp: '^10\..*$'
+    state: absent
 
 - name: K8s ip routed by public master1
   shell: route add 10.96.0.1 gw {{ k8s_master_ip }}
