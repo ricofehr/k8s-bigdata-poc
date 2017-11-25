@@ -27,7 +27,7 @@ Vagrant.configure("2") do |config|
       config.vm.define name do |machine|
         machine.vm.hostname = name
         machine.vm.network :private_network, ip: ip
-        machine.vm.provider "virtualbox" do |v|
+        machine.vm.provider :virtualbox do |v|
           v.name = name
           v.memory = 2048
           v.cpus = 1
@@ -39,7 +39,7 @@ Vagrant.configure("2") do |config|
       config.vm.define name do |machine|
         machine.vm.hostname = name
         machine.vm.network :private_network, ip: ip
-        machine.vm.provider "virtualbox" do |v|
+        machine.vm.provider :virtualbox do |v|
           v.name = name
           v.memory = 2048
           v.cpus = 2
