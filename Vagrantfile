@@ -1,12 +1,12 @@
 # k8s master
 masters = {
-    "master1" => "192.168.77.10"
+    "kubespark-master1" => "192.168.77.10"
 }
 
 # k8s nodes
 nodes = {
-    "node1" => "192.168.77.20",
-    "node2" => "192.168.77.21"
+    "kubespark-node1" => "192.168.77.20",
+    "kubespark-node2" => "192.168.77.21"
 }
 
 Vagrant.configure("2") do |config|
@@ -18,10 +18,10 @@ Vagrant.configure("2") do |config|
 
     config.vm.box = "bento/ubuntu-16.04"
 
-    config.vm.provision "ansible" do |ansible|
-      ansible.playbook = "ansible/playbook.yml"
-      ansible.inventory_path = "ansible/inventory"
-    end
+    # config.vm.provision "ansible" do |ansible|
+    #   ansible.playbook = "ansible/playbook.yml"
+    #   ansible.inventory_path = "ansible/inventory"
+    # end
 
     masters.each do |name, ip|
       config.vm.define name do |machine|
@@ -29,8 +29,8 @@ Vagrant.configure("2") do |config|
         machine.vm.network :private_network, ip: ip
         machine.vm.provider :virtualbox do |v|
           v.name = name
-          v.memory = 2048
-          v.cpus = 1
+          v.memory = 4096
+          v.cpus = 2
         end
       end
     end
@@ -43,6 +43,16 @@ Vagrant.configure("2") do |config|
           v.name = name
           v.memory = 2048
           v.cpus = 2
+        end
+
+        if name == "kubespark-node2"
+          machine.vm.provision "ansible" do |ansible|
+            ansible.playbook = "ansible/playbook.yml"
+            ansible.inventory_path = "ansible/inventory"
+            ansible.verbose = "vvv"
+            ansible.limit = "all"
+            ansible.tags = "okok"
+          end
         end
       end
     end

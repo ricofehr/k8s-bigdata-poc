@@ -15,14 +15,28 @@
 
 - hosts: master
   serial: 1
-  become: true
+  become: false
+  strategy: linear
+  roles:
+    - k8s
+  # vars:
+  #   master_ip: "{{ ansible_host }}"
+
+- hosts: nodes
+  serial: 1
+  become: false
   strategy: linear
   roles:
     - k8s
 
-- hosts: nodes
+- hosts: master
   serial: 1
-  become: true
+  become: false
   strategy: linear
   roles:
-    - k8s
+    - java
+    - helm
+    - kubehdfs
+    - kubespark
+  tags:
+    - kubespark

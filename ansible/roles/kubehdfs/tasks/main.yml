@@ -1,0 +1,26 @@
+---
+
+- name: kubespark hdfs repo
+  git:
+    repo: https://github.com/apache-spark-on-k8s/kubernetes-HDFS
+    dest: ~/kubernetes-HDFS
+#hostvars['kubespark-node1']['ansible_host']
+- name: Create namenode label
+  shell: kubectl label nodes {{ inventory_hostname }} --overwrite hdfs-namenode-selector=hdfs-namenode-0
+  args:
+    chdir: ~/kubernetes-HDFS/charts/hdfs-namenode-k8s/
+
+- name: Install namenode
+  shell: helm install -n my-hdfs-namenode hdfs-namenode-k8s && sleep 100
+  args:
+    chdir: ~/kubernetes-HDFS/charts
+
+- name: Create datanode label
+  shell: kubectl label node {{ inventory_hostname }} --overwrite hdfs-datanode-exclude=yes
+  args:
+    chdir: ~/kubernetes-HDFS/charts/hdfs-datanode-k8s/
+
+- name: Install datanode
+  shell: helm install -n my-hdfs-datanode hdfs-datanode-k8s && sleep 100
+  args:
+    chdir: ~/kubernetes-HDFS/charts

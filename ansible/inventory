@@ -1,6 +1,6 @@
 [master]
-master1 ansible_ssh_host=192.168.77.10 ansible_user=vagrant ansible_ssh_private_key_file=~/.vagrant.d/insecure_private_key
+kubespark-master1 ansible_host=192.168.77.10 ansible_user=vagrant ansible_ssh_private_key_file=~/.vagrant.d/insecure_private_key
 
 [nodes]
-node1 ansible_ssh_host=192.168.77.20 ansible_user=vagrant ansible_ssh_private_key_file=~/.vagrant.d/insecure_private_key
-node2 ansible_ssh_host=192.168.77.21 ansible_user=vagrant ansible_ssh_private_key_file=~/.vagrant.d/insecure_private_key
+kubespark-node1 ansible_host=192.168.77.20 ansible_user=vagrant ansible_ssh_private_key_file=~/.vagrant.d/insecure_private_key
+kubespark-node2 ansible_host=192.168.77.21 ansible_user=vagrant ansible_ssh_private_key_file=~/.vagrant.d/insecure_private_key

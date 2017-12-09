@@ -1,0 +1,55 @@
+---
+
+# - name: install maven
+#   apt: name=maven state=installed update_cache=true force=yes
+#   become: yes
+#   when: 'ansible_os_family == "Debian"'
+
+- name: kubespark repo
+  git:
+    repo: https://github.com/apache-spark-on-k8s/spark
+    dest: ~/kubespark
+
+- name: compile spark
+  shell: >
+    build/./mvn install -Pkubernetes -pl resource-managers/kubernetes/core -am -DskipTests;
+  args:
+    chdir: ~/kubespark
+
+- name: make binary
+  shell: >
+    dev/make-distribution.sh --tgz -Phadoop-2.7 -Pkubernetes
+  args:
+    chdir: ~/kubespark
+
+- name: launch stagin server
+  shell: >
+    kubectl create -f conf/kubernetes-resource-staging-server.yaml
+  args:
+    chdir: ~/kubespark
+
+- name: spark role
+  shell: >
+    kubectl create serviceaccount spark;
+    kubectl create clusterrolebinding spark-role --clusterrole=edit --serviceaccount=default:spark --namespace=default;
+
+- name: launch spark containers
+  shell: >
+    sleep 120;
+    bin/spark-submit
+    --deploy-mode cluster
+    --class org.apache.spark.examples.SparkPi
+    --master k8s://{{ ansible_host}}:443
+    --kubernetes-namespace default
+    --conf spark.kubernetes.authenticate.driver.serviceAccountName=spark
+    --conf spark.executor.instances=3
+    --conf spark.app.name=spark-pi
+    --conf spark.kubernetes.driver.docker.image=kubespark/spark-driver:v2.2.0-kubernetes-0.5.0
+    --conf spark.kubernetes.executor.docker.image=kubespark/spark-executor:v2.2.0-kubernetes-0.5.0
+    --conf spark.kubernetes.initcontainer.docker.image=kubespark/spark-init:v2.2.0-kubernetes-0.5.0
+    --conf spark.kubernetes.resourceStagingServer.uri=http://192.168.77.21:31000
+    ./examples/target/original-spark-examples_2.11-2.2.0-k8s-0.5.0.jar
+  args:
+    chdir: ~/kubespark
+  tags:
+    - okok
