@@ -23,5 +23,10 @@
     - helm
     - kubehdfs
     - kubespark
+    - kubezeppelin
+    - kubelastic
+    - kubestorm
+    - kubekafka
+    - kubehadoop
   tags:
     - kubespark
