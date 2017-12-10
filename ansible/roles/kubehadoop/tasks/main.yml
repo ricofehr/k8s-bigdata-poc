@@ -1,0 +1,12 @@
+---
+
+- name: charts repo
+  git:
+    repo: https://github.com/kubernetes/charts
+    dest: ~/charts
+
+- name: launch hadoop
+  shell: >
+    helm install hadoop $(stable/hadoop/tools/calc_resources.sh 25) stable/hadoop;
+  args:
+    chdir: ~/charts
