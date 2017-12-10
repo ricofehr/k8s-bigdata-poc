@@ -1,0 +1,11 @@
+---
+
+- name: kubernetes repo
+  git:
+    repo: https://github.com/kubernetes/kubernetes
+    dest: ~/kubernetes
+
+- name: elastic pods
+  shell: kubectl create -f examples/elasticsearch/
+  args:
+    chdir: ~/kubernetes
