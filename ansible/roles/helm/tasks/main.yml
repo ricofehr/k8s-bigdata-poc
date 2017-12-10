@@ -42,4 +42,11 @@
   become: yes
 
 - name: Init helm
-  shell: helm init --service-account tiller && sleep 100;
+  shell: helm init --service-account tiller
+
+- name: Ensure helm container is running
+  pause:
+    minutes: 2
+
+- name: Add google repo
+  shell: helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
