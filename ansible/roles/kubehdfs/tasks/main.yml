@@ -6,12 +6,12 @@
     dest: ~/kubernetes-HDFS
 
 - name: Create namenode label
-  shell: kubectl label nodes {{ inventory_hostname }} --overwrite hdfs-namenode-selector=hdfs-namenode-0
+  shell: kubectl label nodes kubespark-node1 --overwrite hdfs-namenode-selector=hdfs-namenode-0
   args:
     chdir: ~/kubernetes-HDFS/charts/hdfs-namenode-k8s/
 
 - name: Install namenode
-  shell: helm install -n my-hdfs-namenode hdfs-namenode-k8s
+  shell: helm install -n hdfs-namenode hdfs-namenode-k8s
   args:
     chdir: ~/kubernetes-HDFS/charts
 
@@ -25,11 +25,10 @@
     chdir: ~/kubernetes-HDFS/charts/hdfs-datanode-k8s/
 
 - name: Install datanode
-  shell: helm install -n my-hdfs-datanode hdfs-datanode-k8s
+  shell: helm install -n hdfs-datanode hdfs-datanode-k8s
   args:
     chdir: ~/kubernetes-HDFS/charts
 
 - name: Ensure datanode is running and ready
   pause:
     minutes: 2
-
