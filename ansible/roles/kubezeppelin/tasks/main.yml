@@ -1,0 +1,13 @@
+---
+
+- name: kubernetes repo
+  git:
+    repo: https://github.com/kubernetes/kubernetes
+    dest: ~/kubernetes
+
+- name: zeppelin pods
+  shell: >
+    kubectl create -f examples/spark/zeppelin-controller.yaml;
+    kubectl create -f examples/spark/zeppelin-service.yaml;
+  args:
+    chdir: ~/kubernetes
