@@ -1,0 +1,11 @@
+---
+
+- name: kubernetes repo
+  git:
+    repo: https://github.com/kubernetes/kubernetes
+    dest: ~/kubernetes
+
+- name: storm pods
+  shell: kubectl create -f examples/storm/
+  args:
+    chdir: ~/kubernetes
