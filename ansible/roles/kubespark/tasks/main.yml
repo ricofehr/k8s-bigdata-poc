@@ -37,6 +37,10 @@
     kubectl create serviceaccount spark;
     kubectl create clusterrolebinding spark-role --clusterrole=edit --serviceaccount=default:spark --namespace=default;
 
+- name: Ensure rols are applied
+  pause:
+    seconds: 30
+
 - name: launch spark containers
   shell: >
     bin/spark-submit
