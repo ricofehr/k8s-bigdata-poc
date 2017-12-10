@@ -9,25 +9,10 @@
       become: true
     - role: kubernetes
       become: true
+    - role: k8s
   pre_tasks:
     - name: Ensure gitmodules update
       local_action: command git submodule update --init --recursive
-
-- hosts: master
-  serial: 1
-  become: false
-  strategy: linear
-  roles:
-    - k8s
-  # vars:
-  #   master_ip: "{{ ansible_host }}"
-
-- hosts: nodes
-  serial: 1
-  become: false
-  strategy: linear
-  roles:
-    - k8s
 
 - hosts: master
   serial: 1

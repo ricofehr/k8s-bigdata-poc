@@ -6,7 +6,9 @@ masters = {
 # k8s nodes
 nodes = {
     "kubespark-node1" => "192.168.77.20",
-    "kubespark-node2" => "192.168.77.21"
+    "kubespark-node2" => "192.168.77.21",
+    "kubespark-node3" => "192.168.77.22",
+    "kubespark-node4" => "192.168.77.23"
 }
 
 Vagrant.configure("2") do |config|
@@ -41,17 +43,17 @@ Vagrant.configure("2") do |config|
         machine.vm.network :private_network, ip: ip
         machine.vm.provider :virtualbox do |v|
           v.name = name
-          v.memory = 2048
-          v.cpus = 2
+          v.memory = 4096
+          v.cpus = 4
         end
 
-        if name == "kubespark-node2"
+        if name == "kubespark-node4"
           machine.vm.provision "ansible" do |ansible|
             ansible.playbook = "ansible/playbook.yml"
             ansible.inventory_path = "ansible/inventory"
-            ansible.verbose = "vvv"
+            ansible.verbose = false
             ansible.limit = "all"
-            ansible.tags = "okok"
+#            ansible.tags = "k8s"
           end
         end
       end

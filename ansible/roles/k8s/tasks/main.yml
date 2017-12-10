@@ -94,21 +94,6 @@
   become: yes
   when: kubernetes_node_type == 'admin'
 
-# - name: token variable for nodes
-#   local_action:
-#     module: copy
-#     content: |
-#              k8s_token: {{ master_token.stdout }}
-#              k8s_master_ip: {{ master_ip }}
-#     dest: group_vars/nodes/k8s
-#   when: kubernetes_node_type == 'admin'
-
-- name: debug 1
-  debug: msg="{{ hostvars['kubespark-master1']['master_token'].stdout }}"
-
-- name: debug 2
-  debug: msg="{{ hostvars['kubespark-master1']['ansible_host'] }}"
-
 - name: launch weave
   shell: kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
   args:
@@ -163,7 +148,6 @@
   become: yes
   when:
     - kubernetes_node_type == 'worker'
-    - k8s_token is defined
 
 - name: proxy master
   shell: nohup kubectl proxy --address={{ ansible_host }} --accept-hosts='^.*$' &
@@ -175,6 +159,12 @@
   debug:
     msg: "You can reach the dashboard with http://{{ ansible_host }}:8001/api/v1/namespaces/kube-system/services/https:kubernetes-dashboard:/proxy/"
   when: kubernetes_node_type == 'admin'
+
+- name: Ensure k8s is running and ready
+  pause:
+    minutes: 2
+  args:
+    creates: ~/.k8sinstall
 
 - name: end install
   file:

@@ -28,6 +28,10 @@
   args:
     chdir: ~/kubespark
 
+- name: Ensure staging server is running and ready
+  pause:
+    minutes: 2
+
 - name: spark role
   shell: >
     kubectl create serviceaccount spark;
@@ -35,7 +39,6 @@
 
 - name: launch spark containers
   shell: >
-    sleep 120;
     bin/spark-submit
     --deploy-mode cluster
     --class org.apache.spark.examples.SparkPi
