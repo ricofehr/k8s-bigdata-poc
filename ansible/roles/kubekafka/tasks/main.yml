@@ -6,7 +6,4 @@
     dest: ~/charts
 
 - name: launch kafka
-  shell: >
-    helm install --name kafka incubator/kafka;
-  args:
-    chdir: ~/charts
+  shell: helm install --name kafka incubator/kafka

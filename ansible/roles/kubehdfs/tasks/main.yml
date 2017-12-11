@@ -5,13 +5,25 @@
     repo: https://github.com/apache-spark-on-k8s/kubernetes-HDFS
     dest: ~/kubernetes-HDFS
 
-- name: Create namenode label
-  shell: kubectl label nodes kubespark-node4 --overwrite hdfs-namenode-selector=hdfs-namenode-0
-  args:
-    chdir: ~/kubernetes-HDFS/charts/hdfs-namenode-k8s/
+- name: namenode folder
+  file:
+    state: directory
+    path: ~/hdfs-name
+    mode: 0755
+
+- name: datanode folder
+  file:
+    state: directory
+    path: ~/hdfs-data
+    mode: 0755
+
+# - name: Create namenode label
+#   shell: kubectl label nodes hdfs-namenode-0 --overwrite hdfs-namenode-selector=hdfs-namenode-0
+#   args:
+#     chdir: ~/kubernetes-HDFS/charts/hdfs-namenode-k8s/
 
 - name: Install namenode
-  shell: helm install -n hdfs-namenode hdfs-namenode-k8s
+  shell: helm install -n hdfs-namenode --set nameNodeHostPath=~/hdfs-name hdfs-namenode-k8s
   args:
     chdir: ~/kubernetes-HDFS/charts
 
@@ -19,13 +31,13 @@
   pause:
     minutes: 2
 
-- name: Create datanode label
-  shell: kubectl label node kubespark-node4 --overwrite hdfs-datanode-exclude=yes
-  args:
-    chdir: ~/kubernetes-HDFS/charts/hdfs-datanode-k8s/
+# - name: Create datanode label
+#   shell: kubectl label node hdfs-namenode-0 --overwrite hdfs-datanode-exclude=yes
+#   args:
+#     chdir: ~/kubernetes-HDFS/charts/hdfs-datanode-k8s/
 
 - name: Install datanode
-  shell: helm install -n hdfs-datanode hdfs-datanode-k8s
+  shell: helm install -n hdfs-datanode --set "dataNodeHostPath={~/hdfs-data}" hdfs-datanode-k8s
   args:
     chdir: ~/kubernetes-HDFS/charts
 
