@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: zeppelin-server
+  labels:
+    app: zeppelin-server
+spec:
+  containers:
+    - name: zeppelin-server
+      image: ricofehr/zeppelin-server:v0.8.0-kubernetes-0.5.0
+      env:
+        - name: MASTER
+          value: k8s://{{ kubezeppelin_k8smaster }}
+        - name: SPARK_SUBMIT_OPTIONS
+          value: >
+            --kubernetes-namespace default
+            --conf spark.submit.deployMode=cluster
+            --conf spark.master=k8s://{{ kubezeppelin_k8smaster }}
+            --conf spark.hadoop.fs.defaultFS=hdfs://hdfs-namenode-0.hdfs-namenode.default.svc.cluster.local:8020
+            --conf spark.hadoop.dfs.block.size=268435456
+            --conf spark.executor.instances={{ kubezeppelin_nbinstances }}
+            --conf spark.executor.cores={{ kubezeppelin_vcpus }}
+            --conf spark.executor.memory={{ kubezeppelin_ram }}g
+            --conf spark.kubernetes.resourceStagingServer.uri=http://{{ kubezeppelin_stagingserver }}:31000
+            --conf spark.kubernetes.driver.docker.image=kubespark/spark-driver:v2.2.0-kubernetes-0.5.0
+            --conf spark.kubernetes.executor.docker.image=kubespark/spark-executor:v2.2.0-kubernetes-0.5.0
+            --conf spark.kubernetes.initcontainer.docker.image=kubespark/spark-init:v2.2.0-kubernetes-0.5.0
+      ports:
+        - containerPort: 8080

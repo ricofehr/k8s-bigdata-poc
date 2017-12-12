@@ -1,13 +1,64 @@
 ---
 
-- name: kubernetes repo
+- name: Zeppelin repo
   git:
-    repo: https://github.com/kubernetes/kubernetes
-    dest: ~/kubernetes
+    repo: https://github.com/banzaicloud/zeppelin
+    refspec: spark-interpreter-k8s
+    dest: ~/zeppelin
 
-- name: zeppelin pods
+- name: Install maven
+  apt: name=maven state=installed update_cache=true force=yes
+
+- name: Compile Zeppelin
   shell: >
-    kubectl create -f examples/spark/zeppelin-controller.yaml;
-    kubectl create -f examples/spark/zeppelin-service.yaml;
+    ./dev/change_scala_version.sh 2.11
+    mvn clean install -DskipTests -Pspark-2.2 -Phadoop-2.7 -Pyarn -Ppyspark -Pscala-2.11
+    pushd zeppelin-distribution >/dev/null
+    mvn org.apache.maven.plugins:maven-assembly-plugin:3.0.0:single -P apache-release
   args:
-    chdir: ~/kubernetes
+    chdir: ~/zeppelin
+
+- name: Docker Image
+  shell: >
+    docker pull {{ kubezeppelin_dockerlogin }}/zeppelin-server:{{ kubezeppelin_dockertag }}
+    if (($? != 0)); then
+      cat > Dockerfile <<EOF
+      FROM kubespark/spark-base:v2.2.0-kubernetes-0.5.0
+      COPY zeppelin-0.8.0-SNAPSHOT /opt/zeppelin
+      ADD https://storage.googleapis.com/kubernetes-release/release/v{{ kubezeppelin_k8smaster }}/bin/linux/amd64/kubectl /usr/local/bin
+      RUN chmod +x /usr/local/bin/kubectl && sed -i s/INFO/DEBUG/ /opt/zeppelin/conf/log4j.properties
+      WORKDIR /opt/zeppelin
+      ENTRYPOINT bin/zeppelin.sh
+      EOF
+
+      docker login -u {{ kubezeppelin_dockerlogin }} -p {{ kubezeppelin_dockerpassword }}
+      docker build -t {{ kubezeppelin_dockerlogin }}/zeppelin-server:{{ kubezeppelin_dockertag }} .
+      docker tag $(docker images {{ kubezeppelin_dockerlogin }}/zeppelin-server -q | tr -d "\n") {{ kubezeppelin_dockerlogin }}/zeppelin-server:{{ kubezeppelin_dockertag }}
+      docker push {{ kubezeppelin_dockerlogin }}/zeppelin-server:{{ kubezeppelin_dockertag }}
+    fi
+  args:
+    chdir: ~/zeppelin/target/zeppelin-0.8.0-SNAPSHOT
+
+- name: Zeppelin svc yaml
+  template:
+    src: templates/zeppelin-service.yaml.j2
+    dest: ~/zeppelin/zeppelin-service.yaml
+
+- name: Launch zeppelin zvc
+  shell: kubectl create -f zeppelin-service.yaml
+
+- name: Zeppelin server yaml
+  template:
+    src: templates/zeppelin-server.yaml.j2
+    dest: ~/zeppelin/zeppelin-server.yaml
+
+- name: Launch zeppelin server
+  shell: kubectl create -f zeppelin-server.yaml
+
+- name: UGLY !!! Give admin role to default user, to be changed !!!
+  shell: kubectl create clusterrolebinding default --clusterrole cluster-admin --serviceaccount=default:default
+
+- name: zeppelin dashboard
+  debug:
+    msg: "You can reach the zeppelin webui with http://{{ ansible_host }}:31298/"
+  when: kubernetes_node_type == 'admin'

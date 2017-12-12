@@ -1,0 +1,11 @@
+---
+
+kubezeppelin_dockerlogin: ricofehr
+kubezeppelin_dockerpassword: TOBEOVERIDEINOTHERPLACE
+kubezeppelin_k8sversion: 1.8.5
+kubezeppelin_dockertag: v0.8.0-kubernetes-0.5.0
+kubezeppelin_stagingserver: {{ ansible_host }}:31000
+kubezeppelin_k8smaster: https://{{ ansible_host }}:443
+kubezeppelin_nbinstances: 3
+kubezeppelin_vcpus: 1
+kubezeppelin_ram: 1
