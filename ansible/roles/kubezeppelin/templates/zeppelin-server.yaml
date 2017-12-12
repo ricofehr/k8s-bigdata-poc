@@ -21,7 +21,7 @@ spec:
             --conf spark.executor.instances={{ kubezeppelin_nbinstances }}
             --conf spark.executor.cores={{ kubezeppelin_vcpus }}
             --conf spark.executor.memory={{ kubezeppelin_ram }}g
-            --conf spark.kubernetes.resourceStagingServer.uri=http://{{ kubezeppelin_stagingserver }}:31000
+            --conf spark.kubernetes.resourceStagingServer.uri={{ kubezeppelin_stagingserver }}
             --conf spark.kubernetes.driver.docker.image=kubespark/spark-driver:v2.2.0-kubernetes-0.5.0
             --conf spark.kubernetes.executor.docker.image=kubespark/spark-executor:v2.2.0-kubernetes-0.5.0
             --conf spark.kubernetes.initcontainer.docker.image=kubespark/spark-init:v2.2.0-kubernetes-0.5.0

@@ -1,4 +1,4 @@
 ---
 
 kubespark_k8smaster: https://{{ ansible_host }}:443
-kubespark_stagingserver: {{ ansible_host }}:31000
+kubespark_stagingserver: http://{{ ansible_host }}:31000
