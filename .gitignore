@@ -4,8 +4,8 @@
 # tmp folder
 /tmp
 
-# k8s is generated dynamically
-ansible/group_vars/nodes/k8s
+# password file
+ansible/group_vars/master/passwords
 
 # ansible retry file
 ansible/playbook.retry
