@@ -11,7 +11,7 @@
   become: yes
 
 - name: Compile Zeppelin
-  shell: >
+  shell: |
     ./dev/change_scala_version.sh 2.11
     mvn clean install -DskipTests -Pspark-2.2 -Phadoop-2.7 -Pyarn -Ppyspark -Pscala-2.11
     pushd zeppelin-distribution >/dev/null
@@ -20,7 +20,7 @@
     chdir: ~/zeppelin
 
 - name: Docker Image
-  shell: >
+  shell: |
     docker pull {{ kubezeppelin_dockerlogin }}/zeppelin-server:{{ kubezeppelin_dockertag }}
     if (($? != 0)); then
       cat > Dockerfile <<EOF
