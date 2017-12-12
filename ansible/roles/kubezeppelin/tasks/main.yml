@@ -8,6 +8,7 @@
 
 - name: Install maven
   apt: name=maven state=installed update_cache=true force=yes
+  become: yes
 
 - name: Compile Zeppelin
   shell: >
