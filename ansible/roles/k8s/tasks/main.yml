@@ -34,8 +34,7 @@
     content: |
              #!/bin/bash
              route add 10.96.0.1 gw {{ hostvars['kubespark-master1']['ansible_host'] }}
-             exit 0
-    dest: /etc/rc.local
+    dest: /etc/network/if-up.d/routemaster
     owner: root
     mode: 0755
   become: yes
