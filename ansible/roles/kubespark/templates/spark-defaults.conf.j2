@@ -1,0 +1,12 @@
+spark.submit.deployMode cluster
+spark.master k8s://{{ kubespark_k8smaster }}
+spark.kubernetes.driver.docker.image kubespark/spark-driver:v2.2.0-kubernetes-0.5.0
+spark.kubernetes.executor.docker.image kubespark/spark-executor:v2.2.0-kubernetes-0.5.0
+spark.kubernetes.initcontainer.docker.image kubespark/spark-init:v2.2.0-kubernetes-0.5.0
+spark.kubernetes.resourceStagingServer.uri {{ kubespark_stagingserver }}
+spark.kubernetes.namespace default
+spark.hadoop.fs.defaultFS hdfs://hdfs-namenode-0.hdfs-namenode.default.svc.cluster.local:8020
+spark.executor.instances {{ kubespark_nbinstances }}
+spark.executor.cores {{ kubespark_vcpus }}
+spark.executor.memory {{ kubespark_ram }}g
+spark.kubernetes.authenticate.driver.serviceAccountName spark

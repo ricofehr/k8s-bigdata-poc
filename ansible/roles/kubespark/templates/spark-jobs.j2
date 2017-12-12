@@ -1,0 +1,26 @@
+#!/bin/bash
+
+pushd ~ >/dev/null
+
+case "$1" in
+  pi)
+    kubespark/bin/spark-submit \
+       --deploy-mode cluster \
+       --class org.apache.spark.examples.SparkPi \
+       --conf spark.app.name=spark-pi \
+       kubespark/examples/target/original-spark-examples_2.11-2.2.0-k8s-0.5.0.jar
+    ;;
+  teragen)
+    kubespark/bin/spark-submit --verbose --class com.github.ehiggs.spark.terasort.TeraGen \
+      --conf spark.app.name=spark-teragen \
+      --conf spark.executor.instances=3 \
+      --conf spark.executor.cores=1 \
+      --conf spark.executor.memory=1g \
+      --conf spark.hadoop.dfs.block.size=268435456 \
+      spark-terasort/target/spark-terasort-1.1-SNAPSHOT.jar 10G terasort-in-10G
+    ;;
+  *)
+    echo "JobName missing or incorrect: pi|teragen"
+    ;;
+esac
+popd >/dev/null

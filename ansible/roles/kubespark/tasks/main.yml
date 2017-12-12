@@ -1,10 +1,5 @@
 ---
 
-# - name: install maven
-#   apt: name=maven state=installed update_cache=true force=yes
-#   become: yes
-#   when: 'ansible_os_family == "Debian"'
-
 - name: kubespark repo
   git:
     repo: https://github.com/apache-spark-on-k8s/spark
@@ -28,36 +23,30 @@
   args:
     chdir: ~/kubespark
 
-- name: Ensure staging server is running and ready
-  pause:
-    minutes: 2
-
 - name: spark role
   shell: >
     kubectl create serviceaccount spark;
     kubectl create clusterrolebinding spark-role --clusterrole=edit --serviceaccount=default:spark --namespace=default;
 
-- name: Ensure roles are applied
-  pause:
-    minutes: 3
+- name: Spark terasort repo
+  git:
+    repo: https://github.com/ehiggs/spark-terasort
+    dest: ~/spark-terasort
 
-- name: launch spark containers
-  shell: >
-    bin/spark-submit
-    --deploy-mode cluster
-    --class org.apache.spark.examples.SparkPi
-    --master k8s://{{ ansible_host}}:443
-    --kubernetes-namespace default
-    --conf spark.kubernetes.authenticate.driver.serviceAccountName=spark
-    --conf spark.executor.instances=3
-    --conf spark.app.name=spark-pi
-    --conf spark.kubernetes.driver.docker.image=kubespark/spark-driver:v2.2.0-kubernetes-0.5.0
-    --conf spark.kubernetes.executor.docker.image=kubespark/spark-executor:v2.2.0-kubernetes-0.5.0
-    --conf spark.kubernetes.initcontainer.docker.image=kubespark/spark-init:v2.2.0-kubernetes-0.5.0
-    --conf spark.kubernetes.resourceStagingServer.uri=http://192.168.77.23:31000
-    ./examples/target/original-spark-examples_2.11-2.2.0-k8s-0.5.0.jar
+- name: compile terasort
+  shell: ../kubespark/build/./mvn install
   args:
-    chdir: ~/kubespark
-  ignore-errors: true
-  tags:
-    - okok
+    chdir: ~/spark-terasort
+
+- name: Spark default config
+  template:
+    src: templates/spark-defaults.conf.j2
+    dest: ~/kubespark/conf/spark-defaults.conf
+
+- name: Spark jobs launch script
+  template:
+    src: templates/spark-jobs.j2
+    dest: /usr/local/bin/spark-jobs
+    mode: 0755
+    owner: root
+  become: yes
