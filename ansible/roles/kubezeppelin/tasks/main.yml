@@ -3,7 +3,7 @@
 - name: Zeppelin repo
   git:
     repo: https://github.com/banzaicloud/zeppelin
-    refspec: spark-interpreter-k8s
+    version: spark-interpreter-k8s
     dest: ~/zeppelin
 
 - name: Install maven
