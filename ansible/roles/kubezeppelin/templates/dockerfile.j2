@@ -1,0 +1,6 @@
+FROM kubespark/spark-base:v2.2.0-kubernetes-0.5.0
+COPY zeppelin-0.8.0-SNAPSHOT /opt/zeppelin
+ADD https://storage.googleapis.com/kubernetes-release/release/v{{ kubezeppelin_k8sversion }}/bin/linux/amd64/kubectl /usr/local/bin
+RUN chmod +x /usr/local/bin/kubectl && sed -i s/INFO/DEBUG/ /opt/zeppelin/conf/log4j.properties
+WORKDIR /opt/zeppelin
+ENTRYPOINT bin/zeppelin.sh

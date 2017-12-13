@@ -3,11 +3,11 @@ kind: Service
 metadata:
   name: zeppelin-k8s-service
   labels:
-  app: zeppelin-server
+    app: zeppelin-server
 spec:
+  selector:
+    app: zeppelin-server
   ports:
   - port: 8080
-  targetPort: 8080
-  selector:
-  app: zeppelin-server
+    targetPort: 8080
   type: NodePort
