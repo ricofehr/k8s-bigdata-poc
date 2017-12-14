@@ -11,13 +11,10 @@
   become: yes
 
 - name: Compile Zeppelin
-  shell: |
-    ./dev/change_scala_version.sh 2.11;
-    mvn clean install -T 1 -B -DskipTests -Pspark-2.2 -Phadoop-2.7 -Pyarn -Ppyspark -Pscala-2.11 -q;
-    mvn org.apache.maven.plugins:maven-assembly-plugin:3.0.0:single -B -T 1 -P apache-release -q;
+  shell: mvn org.apache.maven.plugins:maven-assembly-plugin:3.0.0:single -B -T 1 -P apache-release -q
   args:
     executable: /bin/bash
-    chdir: ~/zeppelin
+    chdir: ~/zeppelin/zeppelin-distribution
 
 - name: generate zeppelin Dockerfile
   template:
