@@ -11,6 +11,6 @@
 
 - name: launch hadoop
   shell: >
-    helm install hadoop $(stable/hadoop/tools/calc_resources.sh 25) stable/hadoop;
+    helm install --name hadoop $(stable/hadoop/tools/calc_resources.sh 25) stable/hadoop;
   args:
     chdir: ~/charts
