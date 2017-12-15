@@ -5,6 +5,10 @@
     repo: https://github.com/kubernetes/charts
     dest: ~/charts
 
+- name: Install bc
+  apt: name=bc state=installed update_cache=true force=yes
+  become: yes
+
 - name: launch hadoop
   shell: >
     helm install hadoop $(stable/hadoop/tools/calc_resources.sh 25) stable/hadoop;
