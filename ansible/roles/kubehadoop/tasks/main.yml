@@ -9,8 +9,16 @@
   apt: name=bc state=installed update_cache=true force=yes
   become: yes
 
+- name: Calc_resources tool for hadoop chart
+  template:
+    src: templates/calc_resources.sh.j2
+    dest: /usr/local/bin/calc_resources.sh
+    mode: 0755
+    owner: root
+  become: yes
+
 - name: launch hadoop
   shell: >
-    helm install --name hadoop $(stable/hadoop/tools/calc_resources.sh 25) stable/hadoop;
+    helm install --name hadoop $(calc_resources.sh 25) stable/hadoop;
   args:
     chdir: ~/charts
