@@ -5,6 +5,7 @@
     repo: https://github.com/banzaicloud/zeppelin
     version: spark-interpreter-k8s
     dest: ~/zeppelin
+    force: yes
 
 - name: Install maven
   apt: name=maven state=installed update_cache=true force=yes
