@@ -1,9 +1,4 @@
 ---
 
-- name: charts repo
-  git:
-    repo: https://github.com/kubernetes/charts
-    dest: ~/charts
-
 - name: launch kafka
-  shell: helm install --name kafka incubator/kafka
+  shell: helm install --name kafka --set zookeeper.enabled=false --set zookeeper.url=zookeeper.default.svc.cluster.local incubator/kafka
