@@ -6,6 +6,15 @@
     dest: ~/kubernetes
 
 - name: storm pods
-  shell: kubectl create -f examples/storm/
+  shell: >
+    kubectl create -f examples/storm/zookeeper.json;
+    sleep 5;
+    kubectl create -f examples/storm/zookeeper-service.json;
+    sleep 5;
+    kubectl create -f examples/storm/storm-nimbus.json;
+    sleep 10;
+    kubectl create -f examples/storm/storm-nimbus-service.json;
+    sleep 5;
+    kubectl create -f examples/storm/storm-worker-controller.json;
   args:
     chdir: ~/kubernetes
