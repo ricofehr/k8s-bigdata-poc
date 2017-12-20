@@ -1,8 +1,8 @@
 [master]
-kubespark-master1 ansible_host=192.168.77.10 ansible_user=vagrant ansible_ssh_private_key_file=~/.vagrant.d/insecure_private_key
+k8s-master1 ansible_host=192.168.77.10 ansible_user=vagrant ansible_ssh_private_key_file=~/.vagrant.d/insecure_private_key
 
 [nodes]
-kubespark-node1 ansible_host=192.168.77.20 ansible_user=vagrant ansible_ssh_private_key_file=~/.vagrant.d/insecure_private_key
-kubespark-node2 ansible_host=192.168.77.21 ansible_user=vagrant ansible_ssh_private_key_file=~/.vagrant.d/insecure_private_key
-kubespark-node3 ansible_host=192.168.77.22 ansible_user=vagrant ansible_ssh_private_key_file=~/.vagrant.d/insecure_private_key
-kubespark-node4 ansible_host=192.168.77.23 ansible_user=vagrant ansible_ssh_private_key_file=~/.vagrant.d/insecure_private_key
+k8s-node1 ansible_host=192.168.77.20 ansible_user=vagrant ansible_ssh_private_key_file=~/.vagrant.d/insecure_private_key
+k8s-node2 ansible_host=192.168.77.21 ansible_user=vagrant ansible_ssh_private_key_file=~/.vagrant.d/insecure_private_key
+k8s-node3 ansible_host=192.168.77.22 ansible_user=vagrant ansible_ssh_private_key_file=~/.vagrant.d/insecure_private_key
+k8s-node4 ansible_host=192.168.77.23 ansible_user=vagrant ansible_ssh_private_key_file=~/.vagrant.d/insecure_private_key

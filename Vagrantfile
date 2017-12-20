@@ -1,14 +1,14 @@
 # k8s master
 masters = {
-    "kubespark-master1" => "192.168.77.10"
+    "k8s-master1" => "192.168.77.10"
 }
 
 # k8s nodes
 nodes = {
-    "kubespark-node1" => "192.168.77.20",
-    "kubespark-node2" => "192.168.77.21",
-    "kubespark-node3" => "192.168.77.22",
-    "kubespark-node4" => "192.168.77.23"
+    "k8s-node1" => "192.168.77.20",
+    "k8s-node2" => "192.168.77.21",
+    "k8s-node3" => "192.168.77.22",
+    "k8s-node4" => "192.168.77.23"
 }
 
 Vagrant.configure("2") do |config|
@@ -47,7 +47,7 @@ Vagrant.configure("2") do |config|
           v.cpus = 4
         end
 
-        if name == "kubespark-node4"
+        if name == "k8s-node4"
           machine.vm.provision "ansible" do |ansible|
             ansible.playbook = "ansible/playbook.yml"
             ansible.inventory_path = "ansible/inventory"

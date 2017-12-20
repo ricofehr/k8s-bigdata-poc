@@ -23,7 +23,7 @@
   become: yes
 
 - name: K8s ip routed by public master1
-  shell: route -n | grep 10.96.0.1 || route add 10.96.0.1 gw {{ hostvars['kubespark-master1']['ansible_host'] }}
+  shell: route -n | grep 10.96.0.1 || route add 10.96.0.1 gw {{ hostvars['k8s-master1']['ansible_host'] }}
   args:
     creates: /home/{{ ansible_user }}/.k8sinstall
   become: yes
@@ -33,7 +33,7 @@
   copy:
     content: |
              #!/bin/bash
-             route add 10.96.0.1 gw {{ hostvars['kubespark-master1']['ansible_host'] }}
+             route add 10.96.0.1 gw {{ hostvars['k8s-master1']['ansible_host'] }}
     dest: /etc/network/if-up.d/routemaster
     owner: root
     mode: 0755
@@ -141,7 +141,7 @@
   when: kubernetes_node_type == 'worker'
 
 - name: Add k8snode
-  shell: "kubeadm join --token {{ hostvars['kubespark-master1']['master_token'].stdout }} --skip-preflight-checks=true {{ hostvars['kubespark-master1']['ansible_host'] }}:443"
+  shell: "kubeadm join --token {{ hostvars['k8s-master1']['master_token'].stdout }} --skip-preflight-checks=true {{ hostvars['k8s-master1']['ansible_host'] }}:443"
   args:
     creates: /home/{{ ansible_user }}/.k8sinstall
   become: yes

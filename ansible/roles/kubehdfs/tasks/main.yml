@@ -6,7 +6,7 @@
     dest: ~/kubernetes-HDFS
 
 - name: Create namenode label
-  shell: kubectl label nodes kubespark-node1 --overwrite hdfs-namenode-selector=hdfs-namenode-0
+  shell: kubectl label nodes k8s-node1 --overwrite hdfs-namenode-selector=hdfs-namenode-0
   args:
     chdir: ~/kubernetes-HDFS/charts/hdfs-namenode-k8s/
 
@@ -20,7 +20,7 @@
     minutes: 2
 
 - name: Create datanode label
-  shell: kubectl label node kubespark-node1 --overwrite hdfs-datanode-exclude=yes
+  shell: kubectl label node k8s-node1 --overwrite hdfs-datanode-exclude=yes
   args:
     chdir: ~/kubernetes-HDFS/charts/hdfs-datanode-k8s/
 
