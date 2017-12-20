@@ -141,7 +141,7 @@
   when: kubernetes_node_type == 'worker'
 
 - name: Add k8snode
-  shell: "kubeadm join --token {{ hostvars['k8s-master1']['master_token'].stdout }} --skip-preflight-checks=true {{ hostvars['k8s-master1']['ansible_host'] }}:443"
+  shell: "kubeadm join --token {{ hostvars['k8s-master1']['master_token'].stdout }} --skip-preflight-checks=true --discovery-token-unsafe-skip-ca-verification {{ hostvars['k8s-master1']['ansible_host'] }}:443"
   args:
     creates: /home/{{ ansible_user }}/.k8sinstall
   become: yes
