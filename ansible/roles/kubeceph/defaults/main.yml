@@ -1,0 +1,8 @@
+---
+
+kubeceph_monitors: 192.168.0.41:6789,192.168.0.42:6789,192.168.0.43:6789
+kubeceph_admin_id: admin
+kubeceph_admin_key: QVFCeFFEbGF2R2NVQWhBQUNtUWNPSHFkT2tBU3Z1MDRMYXYxdUE9PQ==
+kubeceph_user_id: cephuser
+kubeceph_user_key: QVFBZFFUbGFFNGZBSVJBQWY2T3VRbFhrVFpLUnhudGtzZWwxRUE9PQ==
+kubeceph_pool: cephpool

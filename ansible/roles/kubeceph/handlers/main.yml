@@ -1,0 +1,5 @@
+---
+
+- name: restart kubelet
+  shell: service kubelet restart
+  become: yes

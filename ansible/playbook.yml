@@ -10,6 +10,7 @@
     - role: kubernetes
       become: true
     - role: k8s
+    - role: kubeceph
   pre_tasks:
     - name: Ensure gitmodules update
       local_action: command git submodule update --init --recursive
