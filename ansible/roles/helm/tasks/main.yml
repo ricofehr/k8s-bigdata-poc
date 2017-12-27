@@ -48,5 +48,5 @@
   pause:
     minutes: 2
 
-- name: Add google repo
+- name: Add google incubator repo
   shell: helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
