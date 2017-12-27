@@ -9,6 +9,10 @@
   apt: name=bc state=installed update_cache=true force=yes
   become: yes
 
+- name: Install jq
+  apt: name=jq state=installed update_cache=true force=yes
+  become: yes
+
 - name: Calc_resources tool for hadoop chart
   template:
     src: templates/calc_resources.sh.j2
