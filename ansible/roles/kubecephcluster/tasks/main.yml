@@ -1,0 +1,77 @@
+---
+
+- name: Install pip
+  apt: name=python3-pip state=installed update_cache=true force=yes
+
+- name: Install pyaml
+  pip: name=pyaml
+
+- name: Install jinja2
+  pip: name=jinja2
+
+- name: Install jinja2-cli
+  pip: name=jinja2-cli
+
+- name: Install sigill
+  shell: >
+    curl -L "https://github.com/gliderlabs/sigil/releases/download/v0.4.0/sigil_0.4.0_$(uname -sm|tr \  _).tgz" | tar -zxC /usr/local/bin;
+  become: yes
+
+- name: Grant permissions for ceph (!!! no secure)
+  shell: kubectl create -f https://github.com/ReSearchITEng/kubeadm-playbook/raw/master/allow-all-all-rbac.yml
+
+- name: Add all nodes as storage provider
+  shell: kubectl label nodes node-type=storage --all
+
+- name: ceph container repo
+  git:
+    repo: https://github.com/ceph/ceph-container
+    dest: ~/ceph-container
+
+- name: create ceph cluster
+  shell: ./create_ceph_cluster.sh
+  environment:
+    - PATH=$PATH:/home/{{ ansible_user }}/.local/bin
+    - osd_cluster_network=10.0.0.0/8
+    - osd_public_network=10.0.0.0/8
+  args:
+    chdir: ~/ceph-container/examples/kubernetes
+
+- name: write ceph.conf for k8s master
+  copy:
+    src: ~/ceph-container/examples/kubernetes/generator/ceph.conf
+    dest: /etc/ceph/ceph.conf
+  become: yes
+
+- name: write ceph keyring for k8s master
+  copy:
+    src: ~/ceph-container/examples/kubernetes/generator/ceph.client.admin.keyring
+    dest: /etc/ceph/keyring
+  become: yes
+
+- name: Ensure ceph osds and mons is running and ready
+  pause:
+    minutes: 2
+
+- name: create hddpool
+  shell: ceph osd pool create hddpool 128
+
+- name: ceph manifests folder
+  file:
+    path: ~/ceph
+    state: directory
+    mode: 0755
+
+- name: Add rbd storage class
+  template:
+    src: templates/slow_storageclass.yaml.j2
+    dest: ~/ceph/slow_storageclass.yaml
+    mode: 0755
+    owner: root
+
+- name: create slow storage class
+  shell: >
+    kubectl create -f https://raw.githubusercontent.com/kubernetes-incubator/external-storage/master/ceph/rbd/deploy/non-rbac/deployment.yaml --namespace=ceph;
+    kubectl create -f slow_storageclass.yaml;
+  args:
+    chdir: ~/ceph

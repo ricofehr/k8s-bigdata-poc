@@ -9,34 +9,34 @@
 - name: Kubecontroller with ceph
   template:
     src: templates/kube-controller-manager.yml.j2
-    dest: /etc/kubernetes/manifests/kube-controller-manager.yml
+    dest: /etc/kubernetes/manifests/kube-controller-manager.yaml
   become: yes
   when: kubernetes_node_type == 'admin'
 
-- name: ceph manifests folder
-  file:
-    path: ~/ceph
-    state: directory
-    mode: 0755
-
-- name: Secret admin file
-  template:
-    src: templates/ceph-secret-admin.yml.j2
-    dest: ceph/ceph-secret-admin.yml
-  when: kubernetes_node_type == 'admin'
-
-- name: Secret user file
-  template:
-    src: templates/ceph-secret-user.yml.j2
-    dest: ceph/ceph-secret-user.yml
-  when: kubernetes_node_type == 'admin'
-
-- name: Storage class definition
-  template:
-    src: templates/ceph-storage.yml.j2
-    dest: ceph/ceph-storage.yml
-  when: kubernetes_node_type == 'admin'
-
-- name: Execute ceph secrets and storage class
-  shell: kubectl create -f ceph/
-  when: kubernetes_node_type == 'admin'
+# - name: ceph manifests folder
+#   file:
+#     path: ~/ceph
+#     state: directory
+#     mode: 0755
+#
+# - name: Secret admin file
+#   template:
+#     src: templates/ceph-secret-admin.yml.j2
+#     dest: ceph/ceph-secret-admin.yml
+#   when: kubernetes_node_type == 'admin'
+#
+# - name: Secret user file
+#   template:
+#     src: templates/ceph-secret-user.yml.j2
+#     dest: ceph/ceph-secret-user.yml
+#   when: kubernetes_node_type == 'admin'
+#
+# - name: Storage class definition
+#   template:
+#     src: templates/ceph-storage.yml.j2
+#     dest: ceph/ceph-storage.yml
+#   when: kubernetes_node_type == 'admin'
+#
+# - name: Execute ceph secrets and storage class
+#   shell: kubectl create -f ceph/
+#   when: kubernetes_node_type == 'admin'
