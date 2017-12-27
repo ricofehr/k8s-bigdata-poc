@@ -43,13 +43,13 @@
 
 - name: write ceph.conf for k8s master
   copy:
-    src: ~/ceph-container/examples/kubernetes/generator/ceph.conf
+    src: /home/{{ ansible_user }}/ceph-container/examples/kubernetes/generator/ceph.conf
     dest: /etc/ceph/ceph.conf
   become: yes
 
 - name: write ceph keyring for k8s master
   copy:
-    src: ~/ceph-container/examples/kubernetes/generator/ceph.client.admin.keyring
+    src: /home/{{ ansible_user }}/ceph-container/examples/kubernetes/generator/ceph.client.admin.keyring
     dest: /etc/ceph/keyring
   become: yes
 
@@ -71,7 +71,6 @@
     src: templates/slow_storageclass.yaml.j2
     dest: ~/ceph/slow_storageclass.yaml
     mode: 0755
-    owner: root
 
 - name: create slow storage class
   shell: >
