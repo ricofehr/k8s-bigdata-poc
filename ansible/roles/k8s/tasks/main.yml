@@ -29,11 +29,19 @@
   become: yes
   when: kubernetes_node_type == 'worker'
 
+- name: Dns ip routed by public master1
+  shell: route -n | grep 10.96.0.10 || route add 10.96.0.10 gw {{ hostvars['k8s-master1']['ansible_host'] }}
+  args:
+    creates: /home/{{ ansible_user }}/.k8sinstall
+  become: yes
+  when: kubernetes_node_type == 'worker'
+
 - name: K8s ip route at start
   copy:
     content: |
              #!/bin/bash
              route add 10.96.0.1 gw {{ hostvars['k8s-master1']['ansible_host'] }}
+             route add 10.96.0.10 gw {{ hostvars['k8s-master1']['ansible_host'] }}
     dest: /etc/network/if-up.d/routemaster
     owner: root
     mode: 0755
