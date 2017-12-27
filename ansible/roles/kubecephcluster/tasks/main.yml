@@ -5,15 +5,15 @@
   become: yes
 
 - name: Install pyaml
-  pip: name=pyaml
+  pip: name=pyaml executable=pip3
   become: yes
 
 - name: Install jinja2
-  pip: name=jinja2
+  pip: name=jinja2 executable=pip3
   become: yes
 
 - name: Install jinja2-cli
-  pip: name=jinja2-cli
+  pip: name=jinja2-cli executable=pip3
   become: yes
 
 - name: Install sigill
