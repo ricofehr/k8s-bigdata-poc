@@ -2,15 +2,19 @@
 
 - name: Install pip
   apt: name=python3-pip state=installed update_cache=true force=yes
+  become: yes
 
 - name: Install pyaml
   pip: name=pyaml
+  become: yes
 
 - name: Install jinja2
   pip: name=jinja2
+  become: yes
 
 - name: Install jinja2-cli
   pip: name=jinja2-cli
+  become: yes
 
 - name: Install sigill
   shell: >
