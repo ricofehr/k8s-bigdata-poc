@@ -165,6 +165,14 @@
   args:
     creates: ~/.k8sinstall
 
+- name: Resolv.conf on k8s dns pod
+  copy:
+    content: |
+             nameserver 10.96.0.10
+             search svc.cluster.local
+    dest: /etc/resolv.conf
+  become: yes
+
 - name: end install
   file:
     dest: ~/.k8sinstall
