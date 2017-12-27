@@ -1,0 +1,4 @@
+---
+
+- name: launch zookeeper
+  shell: helm install --name zookeeper --set storage=1Gi incubator/zookeeper

@@ -20,6 +20,8 @@
   become: false
   strategy: linear
   roles:
+    - kubecephcluster
+    - kubezookeeper
     - java
     - helm
     - kubehdfs
