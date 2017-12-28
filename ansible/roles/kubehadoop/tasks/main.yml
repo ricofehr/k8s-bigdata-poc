@@ -23,6 +23,11 @@
 
 - name: launch hadoop
   shell: >
-    helm install --name hadoop $(calc_resources.sh 25) stable/hadoop;
+    helm install --name hadoop $(calc_resources.sh 25)
+    --namespace ceph --set persistence.nameNode.enabled=true
+    --set persistence.nameNode.storageClass=slow
+    --set persistence.dataNode.enabled=true
+    --set persistence.dataNode.storageClass=slow
+    stable/hadoop;
   args:
     chdir: ~/charts
