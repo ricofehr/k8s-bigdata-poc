@@ -177,6 +177,7 @@
   copy:
     content: |
              nameserver 10.96.0.10
+             nameserver 8.8.8.8
              search svc.cluster.local
     dest: /etc/resolv.conf
   become: yes
