@@ -43,14 +43,18 @@
 
 - name: write ceph.conf for k8s master
   copy:
+    remote_src: yes
     src: /home/{{ ansible_user }}/ceph-container/examples/kubernetes/generator/ceph.conf
     dest: /etc/ceph/ceph.conf
+    owner: root
   become: yes
 
 - name: write ceph keyring for k8s master
   copy:
+    remote_src: yes
     src: /home/{{ ansible_user }}/ceph-container/examples/kubernetes/generator/ceph.client.admin.keyring
     dest: /etc/ceph/keyring
+    owner: root
   become: yes
 
 - name: Ensure ceph osds and mons is running and ready
