@@ -69,6 +69,9 @@
 - name: create hddpool
   shell: ceph osd pool create hddpool 128
 
+- name: Avoid error "set mismatch, my XXXXXX < server's XXXXXX, missing 40000000"
+  shell: ceph osd crush tunables legacy
+
 - name: ceph manifests folder
   file:
     path: ~/ceph
