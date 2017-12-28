@@ -57,6 +57,10 @@
     owner: root
   become: yes
 
+- name: change ceph mon endpoint
+  shell: sed -i "s/mon_host = ceph-mon$/mon_host = ceph-mon.ceph/" /etc/ceph/ceph.conf
+  become: yes
+
 - name: Ensure ceph osds and mons is running and ready
   pause:
     minutes: 2
