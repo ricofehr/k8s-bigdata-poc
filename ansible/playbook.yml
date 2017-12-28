@@ -28,6 +28,5 @@
     - kubespark
     - kubezeppelin
     - kubelastic
-    - kubestorm
     - kubekafka
     - kubehadoop
