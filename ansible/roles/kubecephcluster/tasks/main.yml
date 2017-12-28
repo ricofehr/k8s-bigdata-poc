@@ -35,9 +35,10 @@
 - name: create ceph cluster
   shell: ./create_ceph_cluster.sh
   environment:
-    - PATH=$PATH:/home/{{ ansible_user }}/.local/bin
-    - osd_cluster_network=10.0.0.0/8
-    - osd_public_network=10.0.0.0/8
+    PATH: /home/{{ ansible_user }}/.local/bin:{{ ansible_env.PATH }}
+    osd_cluster_network: 10.0.0.0/8
+    osd_public_network: 10.0.0.0/8
+    global_mon_host: ceph-mon.ceph
   args:
     chdir: ~/ceph-container/examples/kubernetes
 
