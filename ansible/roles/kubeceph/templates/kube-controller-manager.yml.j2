@@ -22,7 +22,7 @@ spec:
     - --root-ca-file=/etc/kubernetes/pki/ca.crt
     - --service-account-private-key-file=/etc/kubernetes/pki/sa.key
     - --cluster-signing-cert-file=/etc/kubernetes/pki/ca.crt
-    image: docker.io/ricofehr/kube-controller-ceph
+    image: docker.io/ricofehr/kube-controller-with-ceph:1.9.0
     livenessProbe:
       failureThreshold: 8
       httpGet:
