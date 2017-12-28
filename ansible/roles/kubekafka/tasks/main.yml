@@ -1,4 +1,4 @@
 ---
 
 - name: launch kafka
-  shell: helm install --name kafka --set zookeeper.enabled=false --set zookeeper.url=zookeeper.default.svc.cluster.local incubator/kafka
+  shell: helm install --name kafka --set zookeeper.enabled=false --set zookeeper.url=zookeeper-zookeeper.ceph.svc.cluster.local --namespace ceph incubator/kafka
