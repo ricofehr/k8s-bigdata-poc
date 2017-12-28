@@ -20,10 +20,10 @@
   become: false
   strategy: linear
   roles:
-    - kubecephcluster
-    - kubezookeeper
     - java
     - helm
+    - kubecephcluster
+    - kubezookeeper
     - kubehdfs
     - kubespark
     - kubezeppelin
@@ -31,5 +31,3 @@
     - kubestorm
     - kubekafka
     - kubehadoop
-  tags:
-    - kubespark
