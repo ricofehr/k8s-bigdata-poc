@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nimbus
+  labels:
+    name: nimbus
+spec:
+  containers:
+  - name: nimbus
+    command:
+    - /start.sh
+    - zookeeper-zookeeper.ceph
+    image: docker.io/mattf/storm-nimbus
+    ports:
+      - containerPort: 6627
+    resources:
+      limits:
+        cpu: 100m

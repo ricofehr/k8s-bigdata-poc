@@ -1,16 +1,37 @@
 ---
 
-- name: kubernetes repo
-  git:
-    repo: https://github.com/kubernetes/kubernetes
-    dest: ~/kubernetes
+- name: storm manifests folder
+  file:
+    path: ~/storm
+    state: directory
+    mode: 0755
 
-- name: storm pods
+- name: Nimbus pod manifest
+  template:
+    src: templates/storm-nimbus.yaml.j2
+    dest: ~/storm/storm-nimbus.yaml
+    mode: 0755
+
+- name: Nimbus service manifest
+  template:
+    src: templates/storm-nimbus-service.yaml.j2
+    dest: ~/storm/storm-nimbus-service.yaml
+    mode: 0755
+
+- name: Worker replica manifest
+  template:
+    src: templates/storm-worker-controller.yaml.j2
+    dest: ~/storm/storm-worker-controller.yaml
+    mode: 0755
+
+- name: storm nimbus
   shell: >
-    kubectl create -f examples/storm/storm-nimbus.json;
-    sleep 10;
-    kubectl create -f examples/storm/storm-nimbus-service.json;
-    sleep 5;
-    kubectl create -f examples/storm/storm-worker-controller.json;
-  args:
-    chdir: ~/kubernetes
+    kubectl create -f storm/storm-nimbus.yaml;
+    kubectl create -f storm/storm-nimbus-service.yaml;
+
+- name: Ensure nimbus is running and ready
+  pause:
+    minutes: 1
+
+- name: storm worker
+  shell: kubectl create -f storm/storm-worker-controller.yaml

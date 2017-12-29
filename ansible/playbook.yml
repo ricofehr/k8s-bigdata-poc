@@ -26,6 +26,7 @@
     - kubezookeeper
     - kubehdfs
     - kubespark
+    - kubestorm
     - kubezeppelin
     - kubelastic
     - kubekafka
