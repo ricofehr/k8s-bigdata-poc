@@ -33,9 +33,36 @@
     dest: ~/ceph-container
 
 - name: create ceph cluster
-  shell: ./create_ceph_cluster.sh
+  shell: >
+    ./create_secrets.sh;
+    sed -i "s;/dev/sdc;/dev/sdb;g" ceph-osd-prepare-v1-ds.yaml;
+    sed -i "s;/dev/sdc;/dev/sdb;g" ceph-osd-activate-v1-ds.yaml;
+    kubectl create
+    -f ceph-mds-v1-dp.yaml
+    -f ceph-mon-v1-svc.yaml
+    -f ceph-mon-v1-dp.yaml
+    -f ceph-mon-check-v1-dp.yaml
+    -f ceph-osd-prepare-v1-ds.yaml
+    --namespace=ceph;
   environment:
     PATH: /home/{{ ansible_user }}/.local/bin:{{ ansible_env.PATH }}
+    osd_cluster_network: 10.0.0.0/8
+    osd_public_network: 10.0.0.0/8
+    global_mon_host: ceph-mon.ceph
+  args:
+    chdir: ~/ceph-container/examples/kubernetes
+
+- name: Ensure ceph disks are ready
+  pause:
+    minutes: 4
+
+- name: Activate osd nodes
+  shell: >
+    kubectl delete -f ceph-osd-prepare-v1-ds.yaml --namespace=ceph;
+    kubectl create -f ceph-osd-activate-v1-ds.yaml --namespace=ceph;
+    sed -i "s;/dev/sdb;/dev/sdc;g" ceph-osd-prepare-v1-ds.yaml;
+    sed -i "s;/dev/sdb;/dev/sdc;g" ceph-osd-activate-v1-ds.yaml;
+  environment:
     osd_cluster_network: 10.0.0.0/8
     osd_public_network: 10.0.0.0/8
     global_mon_host: ceph-mon.ceph

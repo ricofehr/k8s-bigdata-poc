@@ -43,8 +43,13 @@ Vagrant.configure("2") do |config|
         machine.vm.network :private_network, ip: ip
         machine.vm.provider :virtualbox do |v|
           v.name = name
-          v.memory = 4096
+          v.memory = 10240
           v.cpus = 4
+
+          unless File.exist?("/datas/#{name}/disk_osd-#{name}.vdi")
+            v.customize [ "createhd", "--filename", "/datas/#{name}/disk_osd-#{name}", "--size", "40960" ]
+          end
+          v.customize [ "storageattach", :id, "--storagectl", "SATA Controller", "--port", 3, "--device", 0, "--type", "hdd", "--medium", "/datas/#{name}/disk_osd-#{name}.vdi" ]
         end
 
         if name == "k8s-node4"
@@ -53,7 +58,6 @@ Vagrant.configure("2") do |config|
             ansible.inventory_path = "ansible/inventory"
             ansible.verbose = false
             ansible.limit = "all"
-#            ansible.tags = "k8s"
           end
         end
       end
