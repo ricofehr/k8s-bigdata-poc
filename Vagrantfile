@@ -20,11 +20,6 @@ Vagrant.configure("2") do |config|
 
     config.vm.box = "bento/ubuntu-16.04"
 
-    # config.vm.provision "ansible" do |ansible|
-    #   ansible.playbook = "ansible/playbook.yml"
-    #   ansible.inventory_path = "ansible/inventory"
-    # end
-
     masters.each do |name, ip|
       config.vm.define name do |machine|
         machine.vm.hostname = name
