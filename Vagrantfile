@@ -44,7 +44,7 @@ Vagrant.configure("2") do |config|
         machine.vm.provider :virtualbox do |v|
           v.name = name
           v.memory = 10240
-          v.cpus = 4
+          v.cpus = 6
 
           unless File.exist?("/datas/#{name}/disk_osd-#{name}.vdi")
             v.customize [ "createhd", "--filename", "/datas/#{name}/disk_osd-#{name}", "--size", "40960" ]
