@@ -5,12 +5,42 @@ A Bigdata Stack Installation on k8s with Vagrant (Bento/Ubuntu boxes)
 - 4 Nodes (10 Go RAM)
 - Network: Weave
 - Addons: Heapster, Influxdb, Dashboard
+- Bigdata Stack: ceph, hdfs, zookeeper, spark, hadoop, storm, kafka, elasticsearch
 
-Need Ansible for provision
+## Requirements
+
+Need lot of resources
+- 50 Go RAM
+- At least 4 cpu cores
+- 120Go free disk space for ceph disks creation (vdi format)
+
+Prerequisites
+- Ansible for provision
+- 4 folders for ceph osds disks:
+sudo mkdir -p /datas/{k8s-node1,k8s-node2,k8s-node3,k8s-node4}
+
+## Run
+
+```
+$ git submodule update --init --recursive
 $ vagrant up
+```
 
-Once setup done, the dashboard is reached here
+Once setup done
+- Add property on spark interpreter into Zeppelin Webui: 'spark.submit.deployMode' and set value to 'cluster'
+- Dashboard is reached here
 http://192.168.77.10:8001/api/v1/namespaces/kube-system/services/https:kubernetes-dashboard:/proxy/
 
-Need 4 (one for each k8s node) folders for ceph osds disks
-sudo mkdir -p /datas/{k8s-node1,k8s-node2,k8s-node3,k8s-node4}
+## TODO
+* Make playbook idempotent
+* Add persistent volume for ceph mons (Currently, a restart of ceph mons make ceph down)
+* Add persistent volume for elasticsearch index datas
+* Add dedicated folder for hdfs persistent volumes
+* Use last official docker containers for storm pods
+* Ambary integration
+* Add use tests for launchs some computes on spark, hadoop, storm
+* Improve security policies
+* Improve namespace borders
+* Add an ELK for monitoring
+* Add Prometheus for supervise
+* Add a docker internal registry
