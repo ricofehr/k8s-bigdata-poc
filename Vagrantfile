@@ -38,7 +38,7 @@ Vagrant.configure("2") do |config|
         machine.vm.network :private_network, ip: ip
         machine.vm.provider :virtualbox do |v|
           v.name = name
-          v.memory = 10240
+          v.memory = 12288
           v.cpus = 6
 
           unless File.exist?("/datas/#{name}/disk_osd-#{name}.vdi")

@@ -2,7 +2,7 @@
 
 A Bigdata Stack Installation on k8s with Vagrant (Bento/Ubuntu boxes)
 - 1 Master (6 Go RAM)
-- 4 Nodes (10 Go RAM)
+- 4 Nodes (12 Go RAM)
 - Network: Weave
 - Addons: Heapster, Influxdb, Dashboard
 - Bigdata Stack: ceph, hdfs, zookeeper, spark, hadoop, storm, kafka, elasticsearch
@@ -26,7 +26,7 @@ The k8s cluster installed by Ansible
 ## Requirements
 
 Need lot of resources
-- 50 Go RAM
+- 54 Go RAM
 - At least 4 cpu cores
 - 120Go free disk space for ceph disks creation (vdi format)
 
