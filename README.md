@@ -7,6 +7,22 @@ A Bigdata Stack Installation on k8s with Vagrant (Bento/Ubuntu boxes)
 - Addons: Heapster, Influxdb, Dashboard
 - Bigdata Stack: ceph, hdfs, zookeeper, spark, hadoop, storm, kafka, elasticsearch
 
+## Poc is poc
+
+:warning: It's a poc, not ready to use in production
+* No idempotent playbook
+* Bad security rules and policies
+* Ceph mons dont use persistent storage, a restart of mons pods make ceph cluster unusable
+* Use of no official forked version for spark and Zeppelin
+* No rules or reverse-proxy for direct external access to the tools
+* Need more resources CPU/RAM, and dedicated disks for each osds
+* No high availability on k8s master
+
+## The cluster
+
+The k8s cluster installed by Ansible
+![k8s cluster](https://github.com/ricofehr/k8s-bigdata-poc/raw/master/k8s-cluster.png)
+
 ## Requirements
 
 Need lot of resources
@@ -16,12 +32,12 @@ Need lot of resources
 
 Prerequisites
 - Ansible for provision
-- 4 folders for ceph osds disks:
-sudo mkdir -p /datas/{k8s-node1,k8s-node2,k8s-node3,k8s-node4}
+- 4 folders for ceph osds disks (See Below)
 
 ## Run
 
 ```
+$ sudo mkdir -p /datas/{k8s-node1,k8s-node2,k8s-node3,k8s-node4}
 $ git submodule update --init --recursive
 $ vagrant up
 ```
