@@ -38,6 +38,7 @@ Prerequisites
 
 ```
 $ sudo mkdir -p /datas/{k8s-node1,k8s-node2,k8s-node3,k8s-node4}
+$ sudo chown $USER: /datas/k8s-*
 $ git submodule update --init --recursive
 $ vagrant up
 ```
