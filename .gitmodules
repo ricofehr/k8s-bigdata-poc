@@ -7,3 +7,6 @@
 [submodule "ansible/roles/java"]
 	path = ansible/roles/java
 	url = https://github.com/ansiblebit/oracle-java
+[submodule "ansible/roles/kubernetes"]
+	path = ansible/roles/kubernetes
+	url = https://github.com/ricofehr/ansible-role-kubernetes
