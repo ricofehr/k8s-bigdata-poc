@@ -2,10 +2,10 @@
 
 - name: kubernetes repo
   git:
-    repo: https://github.com/kubernetes/kubernetes
-    dest: ~/kubernetes
+    repo: https://github.com/kubernetes/examples
+    dest: ~/kubernetes-examples
 
 - name: elastic pods
-  shell: kubectl create -f examples/elasticsearch/
+  shell: kubectl create -f staging/elasticsearch/
   args:
-    chdir: ~/kubernetes
+    chdir: ~/kubernetes-examples
