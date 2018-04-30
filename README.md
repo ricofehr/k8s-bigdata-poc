@@ -37,8 +37,8 @@ Prerequisites
 ## Run
 
 ```
-$ sudo mkdir -p /datas/{k8s-node1,k8s-node2,k8s-node3,k8s-node4}
-$ sudo chown $USER: /datas/k8s-*
+$ sudo mkdir -p /datas/k8s/{k8s-node1,k8s-node2,k8s-node3,k8s-node4}
+$ sudo chown $USER: /datas/k8s/k8s-*
 $ git submodule update --init --recursive
 $ vagrant up
 ```
@@ -46,7 +46,7 @@ $ vagrant up
 Once setup done
 - Add property on spark interpreter into Zeppelin Webui: 'spark.submit.deployMode' and set value to 'cluster'
 - Dashboard is reached here
-http://192.168.77.10:8001/api/v1/namespaces/kube-system/services/https:kubernetes-dashboard:/proxy/
+http://192.168.87.10:8001/api/v1/namespaces/kube-system/services/https:kubernetes-dashboard:/proxy/
 
 ## TODO
 * Make playbook idempotent

@@ -1,14 +1,14 @@
 # k8s master
 masters = {
-    "k8s-master1" => "192.168.77.10"
+    "k8s-master1" => "192.168.87.10"
 }
 
 # k8s nodes
 nodes = {
-    "k8s-node1" => "192.168.77.20",
-    "k8s-node2" => "192.168.77.21",
-    "k8s-node3" => "192.168.77.22",
-    "k8s-node4" => "192.168.77.23"
+    "k8s-node1" => "192.168.87.20",
+    "k8s-node2" => "192.168.87.21",
+    "k8s-node3" => "192.168.87.22",
+    "k8s-node4" => "192.168.87.23"
 }
 
 Vagrant.configure("2") do |config|
@@ -41,10 +41,10 @@ Vagrant.configure("2") do |config|
           v.memory = 12288
           v.cpus = 6
 
-          unless File.exist?("/datas/#{name}/disk_osd-#{name}.vdi")
-            v.customize [ "createhd", "--filename", "/datas/#{name}/disk_osd-#{name}", "--size", "40960" ]
+          unless File.exist?("/datas/k8s/#{name}/disk_osd-#{name}.vdi")
+            v.customize [ "createhd", "--filename", "/datas/k8s/#{name}/disk_osd-#{name}", "--size", "40960" ]
           end
-          v.customize [ "storageattach", :id, "--storagectl", "SATA Controller", "--port", 3, "--device", 0, "--type", "hdd", "--medium", "/datas/#{name}/disk_osd-#{name}.vdi" ]
+          v.customize [ "storageattach", :id, "--storagectl", "SATA Controller", "--port", 3, "--device", 0, "--type", "hdd", "--medium", "/datas/k8s/#{name}/disk_osd-#{name}.vdi" ]
         end
 
         if name == "k8s-node4"
