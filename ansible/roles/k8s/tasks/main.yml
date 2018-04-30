@@ -170,8 +170,6 @@
 - name: Ensure k8s is running and ready
   pause:
     minutes: 2
-  args:
-    creates: ~/.k8sinstall
 
 - name: Resolv.conf on k8s dns pod
   copy:
