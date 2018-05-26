@@ -1,7 +1,7 @@
 ---
 
 - name: launch zookeeper
-  shell: helm install --name zookeeper --set storage=1Gi --namespace ceph incubator/zookeeper
+  shell: helm install --name zookeeper --set storage=1Gi --version 0.6.4 --namespace ceph incubator/zookeeper
 
 - name: Ensure zookeeper is running and ready
   pause:
