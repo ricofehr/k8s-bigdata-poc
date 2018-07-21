@@ -3,7 +3,7 @@
 - name: Zeppelin repo
   git:
     repo: https://github.com/banzaicloud/zeppelin
-    version: spark-interpreter-k8s
+    version: master-spark-k8s
     dest: ~/zeppelin
     force: yes
 
@@ -16,7 +16,7 @@
     find . -type f -exec sed -i "s;0.9.0-SNAPSHOT;0.8.0-SNAPSHOT;" {} \;
   args:
     executable: /bin/bash
-    chdir: ~/zeppelin  
+    chdir: ~/zeppelin
 
 - name: Compile Zeppelin
   shell: mvn org.apache.maven.plugins:maven-assembly-plugin:3.0.0:single -B -T 1 -P apache-release -q
