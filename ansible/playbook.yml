@@ -24,12 +24,13 @@
   roles:
     - java
     - helm
+    - kubedashboard
     - kubecephcluster
     - kubezookeeper
     - kubehdfs
     - kubespark
     - kubestorm
-    - kubezeppelin
+    #- kubezeppelin
     - kubelastic
     - kubekafka
     - kubehadoop

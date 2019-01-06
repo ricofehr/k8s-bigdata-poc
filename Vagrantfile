@@ -18,6 +18,7 @@ Vagrant.configure("2") do |config|
     check_guest_additions = false
     functional_vboxsf = false
 
+    #config.vm.box = "generic/ubuntu1604"
     config.vm.box = "bento/ubuntu-16.04"
 
     masters.each do |name, ip|

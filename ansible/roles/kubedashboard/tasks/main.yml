@@ -1,0 +1,9 @@
+---
+
+- name: launch dashboard
+  shell: helm install stable/kubernetes-dashboard --name dashboard
+
+- name: url dashboard
+  debug:
+    msg: "You can reach the dashboard with http://{{ ansible_host }}:8001/api/v1/namespaces/kube-system/services/https:kubernetes-dashboard:/proxy/"
+  when: kubernetes_node_type == 'admin'

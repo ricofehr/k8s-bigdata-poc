@@ -10,24 +10,41 @@
   args:
     chdir: ~/kubernetes-HDFS/charts/hdfs-namenode-k8s/
 
-- name: Install namenode
-  shell: helm install -n hdfs-namenode --set nameNodeHostPath=/hdfs-name hdfs-namenode-k8s
-  args:
-    chdir: ~/kubernetes-HDFS/charts
-
-- name: Ensure namenode is running and ready
-  pause:
-    minutes: 2
+# - name: Install namenode
+#   shell: helm install -n hdfs-namenode --set nameNodeHostPath=/hdfs-name hdfs-namenode-k8s
+#   args:
+#     chdir: ~/kubernetes-HDFS/charts
+#
+# - name: Ensure namenode is running and ready
+#   pause:
+#     minutes: 2
 
 - name: Create datanode label
   shell: kubectl label node k8s-node1 --overwrite hdfs-datanode-exclude=yes
   args:
     chdir: ~/kubernetes-HDFS/charts/hdfs-datanode-k8s/
 
-- name: Install datanode
-  shell: helm install -n hdfs-datanode --set "dataNodeHostPath={/hdfs-data}" hdfs-datanode-k8s
+# - name: Install datanode
+#   shell: helm install -n hdfs-datanode --set "dataNodeHostPath={/hdfs-data}" hdfs-datanode-k8s
+#   args:
+#     chdir: ~/kubernetes-HDFS/charts
+
+# - name: Ensure datanode is running and ready
+#   pause:
+#     minutes: 2
+
+- name: Install hdfs
+  shell: |
+      helm repo add incubator https://kubernetes-charts-incubator.storage.googleapis.com/;
+      helm dependency build charts/hdfs-k8s;
+      helm install -n my-hdfs charts/hdfs-k8s \
+         --set tags.ha=false \
+         --set tags.simple=true --set global.namenodeHAEnabled=false \
+         --set hdfs-simple-namenode-k8s.nodeSelector.hdfs-namenode-selector=hdfs-namenode-0 \
+         --set condition.subchart.zookeeper=false  \
+         --set global.zookeeperQuorumOverride=zookeeper-zookeeper.ceph.svc.cluster.local:2181
   args:
-    chdir: ~/kubernetes-HDFS/charts
+    chdir: ~/kubernetes-HDFS/
 
 - name: Ensure datanode is running and ready
   pause:
